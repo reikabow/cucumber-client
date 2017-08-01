@@ -1,12 +1,14 @@
 import React from 'react';
 import { Route, BrowserRouter } from 'react-router-dom';
 
-import Auth from './auth/Auth';
-import history from './history';
-
 import App from './pages/App';
 import Callback from './pages/Callback'
 import Profile from './pages/Profile';
+
+import AppBar from './components/AppBar';
+
+import Auth from './auth/Auth';
+import history from './history';
 
 const auth = new Auth();
 
@@ -20,6 +22,7 @@ export const makeMainRoutes = () => {
   return (
     <BrowserRouter history={ history } component={ App }>
       <div>
+        <AppBar auth={ auth }/>
         <Route path="/" render={ (props) =>
           <App auth={ auth } {...props}/>
         }/>
