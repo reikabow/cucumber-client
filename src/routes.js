@@ -6,6 +6,7 @@ import history from './history';
 
 import App from './pages/App';
 import Callback from './pages/Callback'
+import Profile from './pages/Profile';
 
 const auth = new Auth();
 
@@ -25,7 +26,10 @@ export const makeMainRoutes = () => {
         <Route path="/callback" render={ (props) => {
           handleAuthentication(props);
           return <Callback {...props} />;
-        }}/>
+        } }/>
+        <Route path="/profile" render={ (props) =>
+          <Profile auth={ auth } {...props}/>
+        }/>
       </div>
     </BrowserRouter>
   );
