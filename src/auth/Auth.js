@@ -1,19 +1,49 @@
 import auth0 from 'auth0-js';
+
 import history from '../history'
+import authVariables from './authVariables'
 
 export default class Auth {
-  auth0 = new auth0.WebAuth({
-    domain: 'vsui.auth0.com',
-    clientID: 'WN3VsAdgS0L2VrvepR4scOUg2DtAaCGQ',
-    redirectUri: 'http://localhost:3000/callback',
-    audience: 'https://vsui.auth0.com/userinfo',
-    responseType: 'token id_token',
-    scope: 'openid'
-  });
+  auth0 = new auth0.WebAuth(authVariables);
+  userProfile;
 
   login = () => {
     this.auth0.authorize();
-  }
+  };
+
+  logout = () => {
+    // Clear access token and ID token from local storage
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('id_token');
+    localStorage.removeItem('expires_at');
+    // navigate to the home route
+    history.replace('/');
+  };
+
+  getAccessToken = () => {
+    const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+      throw new Error('No access token found');
+    }
+    return accessToken;
+  };
+
+  getProfile = cb => {
+    const accessToken = this.getAccessToken();
+    this.auth0.client.userInfo(accessToken, (err, profile) => {
+      if (profile) {
+        this.userProfile = profile
+      }
+      cb(err, profile);
+    });
+  };
+
+  isAuthenticated = () => {
+    // Check whether the current time is past the
+    // access token's expiry time
+    let expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+    return new Date().getTime() < expiresAt;
+  };
 
   handleAuthentication = () => {
     this.auth0.parseHash((err, authResult) => {
@@ -25,7 +55,7 @@ export default class Auth {
         console.log(err);
       }
     });
-  }
+  };
 
   setSession = (authResult) => {
     // Set the time that the access token will expire at
@@ -35,21 +65,5 @@ export default class Auth {
     localStorage.setItem('expires_at', expiresAt);
     // navigate to the home route
     history.replace('/');
-  }
-
-  logout = () => {
-    // Clear access token and ID token from local storage
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('id_token');
-    localStorage.removeItem('expires_at');
-    // navigate to the home route
-    history.replace('/');
-  }
-
-  isAuthenticated = () => {
-    // Check whether the current time is past the
-    // access token's expiry time
-    let expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-    return new Date().getTime() < expiresAt;
-  }
+  };
 }
