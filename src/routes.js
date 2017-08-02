@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, BrowserRouter } from 'react-router-dom';
 
 import App from './pages/App';
+import Transactions from './pages/Transactions';
 import Callback from './pages/Callback'
 import Profile from './pages/Profile';
 
@@ -20,7 +21,7 @@ const handleAuthentication = (nextState, replace) => {
 
 export const makeMainRoutes = () => {
   return (
-    <BrowserRouter history={ history } component={ App }>
+    <BrowserRouter history={ history }>
       <div>
         <AppBar auth={ auth }/>
         <Route path="/" render={ (props) =>
@@ -32,6 +33,9 @@ export const makeMainRoutes = () => {
         } }/>
         <Route path="/profile" render={ (props) =>
           <Profile auth={ auth } {...props}/>
+        }/>
+        <Route path="/transactions" render={ (props) =>
+          <Transactions auth={ auth } {...props}/>
         }/>
       </div>
     </BrowserRouter>
