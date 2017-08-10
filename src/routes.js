@@ -2,7 +2,8 @@ import React from 'react';
 import { Route, BrowserRouter } from 'react-router-dom';
 
 import App from './pages/App';
-import Callback from './pages/Callback'
+import Callback from './pages/Callback';
+import Cart from './pages/Cart';
 import Profile from './pages/Profile';
 
 import AppBar from './components/AppBar';
@@ -23,13 +24,16 @@ export const makeMainRoutes = () => {
     <BrowserRouter history={ history }>
       <div>
         <AppBar auth={ auth }/>
-        <Route path="/" render={ (props) =>
+        <Route exact path="/" render={ (props) =>
           <App auth={ auth } {...props}/>
         }/>
         <Route path="/callback" render={ (props) => {
           handleAuthentication(props);
           return <Callback {...props} />;
         } }/>
+        <Route path="/cart" render={ (props) =>
+          <Cart auth={ auth } {...props}/>
+        }/>
         <Route path="/profile" render={ (props) =>
           <Profile auth={ auth } {...props}/>
         }/>
