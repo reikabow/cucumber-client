@@ -21,6 +21,22 @@ class Cart extends Component {
     });
   }
 
+  deleteItem = index => {
+    console.log(index, this.state.addIndex);
+    const {items, addIndex, showAdd} = this.state;
+    if (!showAdd && addIndex === index) { // The editing window is being deleted
+      this.setState({
+        items: [...items.splice(0, addIndex), ...items.splice(addIndex + 1)],
+        showAdd: true,
+        addIndex: null
+      });
+    } else {
+      this.setState({
+        items: [...items.splice(0, addIndex), ...items.splice(addIndex + 1)]
+      });
+    }
+  }
+
   addItem = () => {
     const items = [...this.state.items, null];
     this.setState({
@@ -42,8 +58,10 @@ class Cart extends Component {
           ? this.state.items.map((item, i) =>
               <AddOrItem
                 addActive={ i === this.state.addIndex }
+                deleteItem={ this.deleteItem }
                 saveItem={ this.saveItem }
                 key={ i }
+                id={ i }
                 { ...item }
               />
             )

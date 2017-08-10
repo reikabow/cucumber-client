@@ -1,12 +1,14 @@
 import React from 'react';
 import Paper from 'material-ui/Paper';
 import styled from 'styled-components';
+import Button from 'material-ui/Button';
 
 const Item = props => {
-  const {category, price, quantity, units, notes} = props;
+  const {category, price, quantity, units, notes, id, deleteItem} = props;
   return (
     <Paper className={ props.className }>
       { category } { price } { quantity } { units } { notes }
+      <Button onClick={ () => { deleteItem(id) } }>Delete</Button>
     </Paper>
   );
 }

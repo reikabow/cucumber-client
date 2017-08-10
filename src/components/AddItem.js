@@ -64,10 +64,16 @@ class AddItem extends Component {
             value={ units }
           />
           <Button
-            id="button"
+            className="button"
             onClick={ () => this.props.saveItem(this.state) }
           >
             Add
+          </Button>
+          <Button
+            className="button"
+            onClick={ () => this.props.deleteItem(this.props.id) }
+          >
+            Delete
           </Button>
         </div>
       </Paper>

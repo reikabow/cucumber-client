@@ -1,7 +1,8 @@
 import React from 'react';
+import { CircularProgress } from 'material-ui/Progress';
 
 export default (props) => {
   return (
-    <h1>Logged in</h1>
+    <CircularProgress size={ 50 }/>
   );
 }
