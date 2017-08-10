@@ -5,12 +5,20 @@ import Button from 'material-ui/Button'
 import styled from 'styled-components';
 
 class AddItem extends Component {
-  state = {
+  static defaultProps = {
     category: '',
     price: '',
     notes: '',
     quantity: '1.0',
     units: 'units'
+  }
+
+  state = {
+    category: this.props.category,
+    price: this.props.price,
+    notes: this.props.notes,
+    quantity: this.props.quantity,
+    units: this.props.units
   }
 
   onCategoryChange = e => this.setState({category: e.target.value});
@@ -57,7 +65,7 @@ class AddItem extends Component {
           />
           <Button
             id="button"
-            onClick={ () => this.props.addItem(this.state) }
+            onClick={ () => this.props.saveItem(this.state) }
           >
             Add
           </Button>

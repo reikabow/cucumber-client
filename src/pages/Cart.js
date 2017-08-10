@@ -1,25 +1,57 @@
 import React, { Component } from 'react';
 import AddItem from '../components/AddItem';
 import Item from '../components/Item';
+import AddOrItem from '../components/AddOrItem';
 import Button from 'material-ui/Button';
 import styled from 'styled-components';
 
 class Cart extends Component {
   state = {
-    items: []
+    items: [],
+    showAdd: true,
+    addIndex: null
   }
 
-  addItem = item => {
-    this.setState({items: [...this.state.items, item]});
+  saveItem = item => {
+    const {items, addIndex} = this.state;
+    this.setState({
+      items: [...items.splice(0, addIndex), item, ...items.splice(addIndex + 1)],
+      addIndex: null,
+      showAdd: true
+    });
+  }
+
+  addItem = () => {
+    const items = [...this.state.items, null];
+    this.setState({
+      items,
+      showAdd: false,
+      addIndex: items.length - 1
+    });
+  }
+
+  activateAdd = addIndex => {
+    this.setState({ showAdd: true, addIndex })
   }
 
   render() {
     return (
       <div id="Cart" className={ this.props.className }>
-        <AddItem addItem={ this.addItem }/>
         {
           this.state.items.length
-          ? this.state.items.map((item, i) => <Item key={ i } { ...item }/>)
+          ? this.state.items.map((item, i) =>
+              <AddOrItem
+                addActive={ i === this.state.addIndex }
+                saveItem={ this.saveItem }
+                key={ i }
+                { ...item }
+              />
+            )
+          : null
+        }
+        {
+          this.state.showAdd
+          ? <Button onClick={ this.addItem }>Add item</Button>
           : null
         }
         {
@@ -27,7 +59,6 @@ class Cart extends Component {
           ? <Button>Submit</Button>
           : null
         }
-
       </div>
     );
   }
