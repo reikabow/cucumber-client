@@ -1,74 +1,98 @@
 import React, { Component } from 'react';
-import AddItem from '../components/AddItem';
 import Item from '../components/Item';
-import AddOrItem from '../components/AddOrItem';
 import Button from 'material-ui/Button';
 import styled from 'styled-components';
+import findIndex from 'lodash/findIndex';
 
 class Cart extends Component {
   state = {
     items: [],
-    showAdd: true,
-    addIndex: null
+    nextId: 0,
+    editActive: false,
+    editId: null
   }
 
-  saveItem = item => {
-    const {items, addIndex} = this.state;
+  getIndex = id => {
+    const index = findIndex(this.state.items, item => item.id === id);
+    return index;
+  }
+
+  addItem = () => {
+    alert(`add`);
+    const { items, nextId } = this.state;
+    const newItems = [...items, { id: nextId }];
     this.setState({
-      items: [...items.splice(0, addIndex), item, ...items.splice(addIndex + 1)],
-      addIndex: null,
-      showAdd: true
+      items: newItems,
+      editActive: true,
+      editId: nextId,
+      nextId: nextId + 1
     });
   }
 
-  deleteItem = index => {
-    console.log(index, this.state.addIndex);
-    const {items, addIndex, showAdd} = this.state;
-    if (!showAdd && addIndex === index) { // The editing window is being deleted
+  editItem = id => {
+    const index = this.getIndex(id);
+    alert(`edit ${id} at ${index}`)
+    this.setState({
+      editId: id,
+      editActive: true
+    });
+  }
+
+  saveItem = item => {
+    const {items, editId} = this.state;
+    const index = this.getIndex(item.id);
+    alert(`save ${item.id} at ${index}`);
+    const it = items[index];
+    console.log(it);
+    this.setState({
+      items: [...items.splice(0, index), Object.assign(it, item), ...items.splice(index + 1)],
+      editId: null,
+      editActive: false
+    });
+  }
+
+  deleteItem = id => {
+    const {items, editId, editActive} = this.state;
+    console.log(items);
+    const index = this.getIndex(id);
+    alert(`delete ${id} at ${index}`);
+    if (editActive && editId === id) { // The editing window is being deleted
       this.setState({
-        items: [...items.splice(0, addIndex), ...items.splice(addIndex + 1)],
-        showAdd: true,
-        addIndex: null
+        items: [...items.splice(0, index), ...items.splice(index + 1)],
+        editActive: false,
+        editId: null
       });
     } else {
       this.setState({
-        items: [...items.splice(0, addIndex), ...items.splice(addIndex + 1)]
+        items: [...items.splice(0, index), ...items.splice(index + 1)]
       });
     }
   }
 
-  addItem = () => {
-    const items = [...this.state.items, null];
-    this.setState({
-      items,
-      showAdd: false,
-      addIndex: items.length - 1
-    });
-  }
-
-  activateAdd = addIndex => {
+  activateEdit = addIndex => {
     this.setState({ showAdd: true, addIndex })
   }
 
   render() {
+    console.log(this.state.items);
     return (
       <div id="Cart" className={ this.props.className }>
         {
           this.state.items.length
           ? this.state.items.map((item, i) =>
-              <AddOrItem
-                addActive={ i === this.state.addIndex }
+              <Item
+                edit={ this.state.editId === item.id }
                 deleteItem={ this.deleteItem }
+                editItem={ this.editItem }
                 saveItem={ this.saveItem }
-                key={ i }
-                id={ i }
+                key={ item.id }
                 { ...item }
               />
             )
           : null
         }
         {
-          this.state.showAdd
+          !this.state.editActive
           ? <Button onClick={ this.addItem }>Add item</Button>
           : null
         }

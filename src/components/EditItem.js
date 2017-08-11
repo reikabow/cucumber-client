@@ -4,7 +4,7 @@ import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button'
 import styled from 'styled-components';
 
-class AddItem extends Component {
+class EditItem extends Component {
   static defaultProps = {
     category: '',
     price: '',
@@ -14,6 +14,7 @@ class AddItem extends Component {
   }
 
   state = {
+    id: this.props.id,
     category: this.props.category,
     price: this.props.price,
     notes: this.props.notes,
@@ -31,7 +32,7 @@ class AddItem extends Component {
     const {category, price, notes, quantity, units} = this.state;
     return (
       <Paper className={ this.props.className }>
-
+        <h1>{ this.state.id }</h1>
         <div id="fields">
           <TextField
             className="tf"
@@ -67,7 +68,7 @@ class AddItem extends Component {
             className="button"
             onClick={ () => this.props.saveItem(this.state) }
           >
-            Add
+            Save
           </Button>
           <Button
             className="button"
@@ -81,7 +82,7 @@ class AddItem extends Component {
   }
 }
 
-export default styled(AddItem)`
+export default styled(EditItem)`
   width: 90vw;
   margin: 1em auto;
   padding: 0.5em;
