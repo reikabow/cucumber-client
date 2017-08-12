@@ -66,7 +66,7 @@ class EditItem extends Component {
           />
           <Button
             className="button"
-            onClick={ () => this.props.saveItem(this.state) }
+            onClick={ () => this.props.saveItem(this.props.id, this.state) }
           >
             Save
           </Button>

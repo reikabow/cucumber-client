@@ -38,14 +38,12 @@ class Cart extends Component {
     });
   }
 
-  saveItem = item => {
-    const {items, editId} = this.state;
-    const index = this.getIndex(item.id);
-    alert(`save ${item.id} at ${index}`);
-    const it = items[index];
-    console.log(it);
+  saveItem = (id, item) => {
+    const {items} = this.state;
+    const index = this.getIndex(id);
+    alert(`save ${id} at ${index}`);
     this.setState({
-      items: [...items.splice(0, index), Object.assign(it, item), ...items.splice(index + 1)],
+      items: [...items.splice(0, index), Object.assign({ id }, item), ...items.splice(index + 1)],
       editId: null,
       editActive: false
     });
@@ -53,7 +51,6 @@ class Cart extends Component {
 
   deleteItem = id => {
     const {items, editId, editActive} = this.state;
-    console.log(items);
     const index = this.getIndex(id);
     alert(`delete ${id} at ${index}`);
     if (editActive && editId === id) { // The editing window is being deleted
@@ -69,12 +66,7 @@ class Cart extends Component {
     }
   }
 
-  activateEdit = addIndex => {
-    this.setState({ showAdd: true, addIndex })
-  }
-
   render() {
-    console.log(this.state.items);
     return (
       <div id="Cart" className={ this.props.className }>
         {
