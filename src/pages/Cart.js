@@ -18,7 +18,6 @@ class Cart extends Component {
   }
 
   addItem = () => {
-    alert(`add`);
     const { items, nextId } = this.state;
     const newItems = [...items, { id: nextId }];
     this.setState({
@@ -30,8 +29,6 @@ class Cart extends Component {
   }
 
   editItem = id => {
-    const index = this.getIndex(id);
-    alert(`edit ${id} at ${index}`)
     this.setState({
       editId: id,
       editActive: true
@@ -41,9 +38,9 @@ class Cart extends Component {
   saveItem = (id, item) => {
     const {items} = this.state;
     const index = this.getIndex(id);
-    alert(`save ${id} at ${index}`);
+    const newItems = [...items.slice(0, index), Object.assign({ id }, item), ...items.slice(index + 1)];
     this.setState({
-      items: [...items.splice(0, index), Object.assign({ id }, item), ...items.splice(index + 1)],
+      items: newItems,
       editId: null,
       editActive: false
     });
@@ -52,16 +49,16 @@ class Cart extends Component {
   deleteItem = id => {
     const {items, editId, editActive} = this.state;
     const index = this.getIndex(id);
-    alert(`delete ${id} at ${index}`);
+    const newItems = [...items.slice(0, index), ...items.slice(index + 1)];
     if (editActive && editId === id) { // The editing window is being deleted
       this.setState({
-        items: [...items.splice(0, index), ...items.splice(index + 1)],
+        items: newItems,
         editActive: false,
         editId: null
       });
     } else {
       this.setState({
-        items: [...items.splice(0, index), ...items.splice(index + 1)]
+        items: newItems
       });
     }
   }
