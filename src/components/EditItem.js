@@ -32,7 +32,6 @@ class EditItem extends Component {
     const {category, price, notes, quantity, units} = this.state;
     return (
       <Paper className={ this.props.className }>
-        <h1>{ this.state.id }</h1>
         <div id="fields">
           <TextField
             className="tf"

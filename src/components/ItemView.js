@@ -7,7 +7,6 @@ const Item = props => {
   const {category, price, quantity, units, notes, id, deleteItem, editItem} = props;
   return (
     <Paper className={ props.className }>
-      <h1>{ id }</h1>
       { category } { price } { quantity } { units } { notes }
       <Button onClick={ () => { deleteItem(id) } }>Delete</Button>
       <Button onClick={ () => { editItem(id) } }>Edit</Button>
