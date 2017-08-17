@@ -12,6 +12,15 @@ class Cart extends Component {
     editId: null
   }
 
+  clear = () => {
+    this.setState({
+      items: [],
+      nextId: 0,
+      editActive: false,
+      editId: null
+    });
+  }
+
   getIndex = id => {
     const index = findIndex(this.state.items, item => item.id === id);
     return index;
@@ -63,6 +72,21 @@ class Cart extends Component {
     }
   }
 
+  handleSubmit = async () => {
+    const { getIdToken } = this.props.auth;
+    await fetch('/api/transaction', {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getIdToken()}`
+      },
+      method: 'POST',
+      body: JSON.stringify(this.state.items)
+    })
+    alert('Submitted');
+    this.clear();
+  }
+
   render() {
     return (
       <div id="Cart" className={ this.props.className }>
@@ -86,8 +110,8 @@ class Cart extends Component {
           : null
         }
         {
-          this.state.items.length
-          ? <Button>Submit</Button>
+          this.state.items.length > 0
+          ? <Button onClick={ this.handleSubmit }>Submit</Button>
           : null
         }
       </div>
