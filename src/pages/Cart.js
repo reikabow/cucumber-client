@@ -74,16 +74,21 @@ class Cart extends Component {
 
   handleSubmit = async () => {
     const { getIdToken } = this.props.auth;
-    await fetch('/api/transaction', {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getIdToken()}`
-      },
-      method: 'POST',
-      body: JSON.stringify(this.state.items)
-    })
-    alert('Submitted');
+    try {
+      const res = await fetch('/api/transactions', {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getIdToken()}`
+        },
+        method: 'POST',
+        body: JSON.stringify(this.state.items)
+      });
+      if (res.status < 600 && res.status >= 500)
+        throw new Error('Bad status');
+    } catch (err) {
+      // TODO: Handle errors
+    }
     this.clear();
   }
 
