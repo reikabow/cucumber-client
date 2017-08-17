@@ -36,14 +36,17 @@ export default class Auth {
     return idToken;
   }
 
-  getProfile = cb => {
+  getProfile = () => {
     const accessToken = this.getAccessToken();
-    this.auth0.client.userInfo(accessToken, (err, profile) => {
-      if (profile) {
-        this.userProfile = profile
-      }
-      cb(err, profile);
+    return new Promise((resolve, reject) => {
+      this.auth0.client.userInfo(accessToken, (err, profile) => {
+        if (profile)
+          resolve(profile);
+        else
+          reject();
+      });
     });
+
   };
 
   isAuthenticated = () => {

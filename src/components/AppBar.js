@@ -23,26 +23,22 @@ class AppBar extends Component {
   login = () => this.props.auth.login();
   logout = () => this.props.auth.logout();
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.state.profile === nextState.profile) {
-      return false;
-    } else {
-      return true;
+  async componentDidMount() {
+    const { isAuthenticated, getProfile } = this.props.auth;
+    if (isAuthenticated()) {
+      const profile = await getProfile();
+      this.setState({ profile });
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.profile !== nextState.profile;
   }
 
   render() {
     const props = this.props;
     const { profile } = this.state;
-    const { isAuthenticated, userProfile, getProfile } = props.auth;
-
-    if (isAuthenticated() && !userProfile) {
-      getProfile((err, profile) => {
-        this.setState({ profile });
-      });
-    } else {
-      this.setState({ profile: userProfile });
-    }
+    const { isAuthenticated, getProfile } = props.auth;
 
     return (
       <MaterialAppBar position="static">
