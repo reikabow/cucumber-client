@@ -86,10 +86,11 @@ class Cart extends Component {
       });
       if (res.status < 600 && res.status >= 500)
         throw new Error('Bad status');
+      this.clear();
     } catch (err) {
-      // TODO: Handle errors
+      // TODO: Handle errors better
+      alert(`Submission error: ${err.message}`);
     }
-    this.clear();
   }
 
   render() {
