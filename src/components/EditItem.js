@@ -10,7 +10,7 @@ class EditItem extends Component {
     price: '',
     notes: '',
     quantity: '1.0',
-    units: 'units'
+    units: 'units',
   }
 
   state = {
@@ -19,7 +19,28 @@ class EditItem extends Component {
     price: this.props.price,
     notes: this.props.notes,
     quantity: this.props.quantity,
-    units: this.props.units
+    units: this.props.units,
+    errors: []
+  }
+
+  isValid = () => {
+    const { price, quantity } = this.state;
+    const errors = [];
+    if (!price || isNaN(price))
+      errors.push('Price should be a number');
+    if (!quantity || isNaN(quantity))
+      errors.push('Quantity should be a number');
+    if (errors.length) {
+      this.setState({ errors });
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  attemptSave = id => {
+    if (this.isValid())
+      this.props.saveItem(id, this.state);
   }
 
   onCategoryChange = e => this.setState({category: e.target.value});
@@ -32,6 +53,9 @@ class EditItem extends Component {
     const {category, price, notes, quantity, units} = this.state;
     return (
       <Paper className={ this.props.className }>
+        <div id="errors">
+          { this.state.errors.join(', ') }
+        </div>
         <div id="fields">
           <TextField
             className="tf"
@@ -65,7 +89,7 @@ class EditItem extends Component {
           />
           <Button
             className="button"
-            onClick={ () => this.props.saveItem(this.props.id, this.state) }
+            onClick={ () => this.attemptSave(this.props.id, this.state) }
           >
             Save
           </Button>
