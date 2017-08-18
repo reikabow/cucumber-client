@@ -29,13 +29,22 @@ class Cart extends Component {
   // Potential gotchas
   // - not-unique category names
   // - stale categories (multiple clients)
-  getCategory(category) {
-    if (category === '')
-      return
-    const categories = category.split('/');
-    const search = categories[categories.length - 1];
-    return this.state.categories.find(c => c.name === search);
-    // TODO: adding new categories
+  getCategory(categoryString) {
+    try {
+      if (categoryString === '') {
+        categoryString = 'ROOT';
+      }
+      const categories = categoryString.split('/');
+      const search = categories[categories.length - 1];
+      const category = this.state.categories.find(c => c.name === search);
+      if (!category) {
+        throw new Error('Unknown category');
+      }
+      return category;
+      // TODO: adding new categories
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
   }
 
   //
@@ -80,6 +89,8 @@ class Cart extends Component {
 
   // Close the edit window on a cart item, saving the changes
   saveItem = (id, item) => {
+    item.category_id = this.getCategory(item.category).id;
+
     const {items} = this.state;
     const index = this.getIndex(id);
     const newItems = [...items.slice(0, index), Object.assign({ id }, item), ...items.slice(index + 1)];
