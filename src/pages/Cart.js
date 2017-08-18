@@ -9,9 +9,40 @@ class Cart extends Component {
     items: [],
     nextId: 0,
     editActive: false,
-    editId: null
+    editId: null,
+    categories: []
   }
 
+  async componentDidMount() {
+    const { getIdToken } = this.props.auth;
+    const response = await fetch('/api/categories', { headers: {'Authorization': `Bearer ${getIdToken()}`} });
+    const categories = await response.json();
+    this.setState({ categories });
+    console.log(categories);
+  }
+
+  //
+  // UTILITIES
+  //
+
+  // Return category objects from category string
+  // Potential gotchas
+  // - not-unique category names
+  // - stale categories (multiple clients)
+  getCategory(category) {
+    if (category === '')
+      return
+    const categories = category.split('/');
+    const search = categories[categories.length - 1];
+    return this.state.categories.find(c => c.name === search);
+    // TODO: adding new categories
+  }
+
+  //
+  // CART HANDLERS
+  //
+
+  // Clear the cart
   clear = () => {
     this.setState({
       items: [],
@@ -21,11 +52,13 @@ class Cart extends Component {
     });
   }
 
+  // Get the index of a cart item
   getIndex = id => {
     const index = findIndex(this.state.items, item => item.id === id);
     return index;
   }
 
+  // Add an item to the cart
   addItem = () => {
     const { items, nextId } = this.state;
     const newItems = [...items, { id: nextId }];
@@ -37,6 +70,7 @@ class Cart extends Component {
     });
   }
 
+  // Activate the edit window on a cart item
   editItem = id => {
     this.setState({
       editId: id,
@@ -44,6 +78,7 @@ class Cart extends Component {
     });
   }
 
+  // Close the edit window on a cart item, saving the changes
   saveItem = (id, item) => {
     const {items} = this.state;
     const index = this.getIndex(id);
@@ -55,6 +90,7 @@ class Cart extends Component {
     });
   }
 
+  // Delete a cart item
   deleteItem = id => {
     const {items, editId, editActive} = this.state;
     const index = this.getIndex(id);
@@ -72,6 +108,7 @@ class Cart extends Component {
     }
   }
 
+  // Submit the contents of the cart to the server
   handleSubmit = async () => {
     const { getIdToken } = this.props.auth;
     try {
@@ -111,14 +148,12 @@ class Cart extends Component {
           : null
         }
         {
-          !this.state.editActive
-          ? <Button onClick={ this.addItem }>Add item</Button>
-          : null
+          !this.state.editActive &&
+          <Button onClick={ this.addItem }>Add item</Button>
         }
         {
-          this.state.items.length > 0
-          ? <Button onClick={ this.handleSubmit }>Submit</Button>
-          : null
+          this.state.items.length > 0 &&
+          <Button onClick={ this.handleSubmit }>Submit</Button>
         }
       </div>
     );
