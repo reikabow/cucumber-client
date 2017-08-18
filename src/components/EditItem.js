@@ -87,6 +87,7 @@ class EditItem extends Component {
             label="Units"
             value={ units }
           />
+          <br/>
           <Button
             className="button"
             onClick={ () => this.attemptSave(this.props.id, this.state) }

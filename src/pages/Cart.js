@@ -167,7 +167,7 @@ class Cart extends Component {
           <Button onClick={ this.addItem }>Add item</Button>
         }
         {
-          this.state.items.length > 0 &&
+          this.state.items.length > 0 && !this.state.editActive &&
           <Button onClick={ this.handleSubmit }>Submit</Button>
         }
       </div>
