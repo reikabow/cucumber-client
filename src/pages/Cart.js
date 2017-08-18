@@ -13,14 +13,6 @@ class Cart extends Component {
     categories: []
   }
 
-  async componentDidMount() {
-    const { getIdToken } = this.props.auth;
-    const response = await fetch('/api/categories', { headers: {'Authorization': `Bearer ${getIdToken()}`} });
-    const categories = await response.json();
-    this.setState({ categories });
-    console.log(categories);
-  }
-
   //
   // UTILITIES
   //
@@ -47,25 +39,15 @@ class Cart extends Component {
     }
   }
 
-  //
-  // CART HANDLERS
-  //
-
-  // Clear the cart
-  clear = () => {
-    this.setState({
-      items: [],
-      nextId: 0,
-      editActive: false,
-      editId: null
-    });
-  }
-
   // Get the index of a cart item
   getIndex = id => {
     const index = findIndex(this.state.items, item => item.id === id);
     return index;
   }
+
+  //
+  // CART HANDLERS
+  //
 
   // Add an item to the cart
   addItem = () => {
@@ -77,6 +59,24 @@ class Cart extends Component {
       editId: nextId,
       nextId: nextId + 1
     });
+  }
+
+  // Delete a cart item
+  deleteItem = id => {
+    const {items, editId, editActive} = this.state;
+    const index = this.getIndex(id);
+    const newItems = [...items.slice(0, index), ...items.slice(index + 1)];
+    if (editActive && editId === id) { // The editing window is being deleted
+      this.setState({
+        items: newItems,
+        editActive: false,
+        editId: null
+      });
+    } else {
+      this.setState({
+        items: newItems
+      });
+    }
   }
 
   // Activate the edit window on a cart item
@@ -101,22 +101,14 @@ class Cart extends Component {
     });
   }
 
-  // Delete a cart item
-  deleteItem = id => {
-    const {items, editId, editActive} = this.state;
-    const index = this.getIndex(id);
-    const newItems = [...items.slice(0, index), ...items.slice(index + 1)];
-    if (editActive && editId === id) { // The editing window is being deleted
-      this.setState({
-        items: newItems,
-        editActive: false,
-        editId: null
-      });
-    } else {
-      this.setState({
-        items: newItems
-      });
-    }
+  // Clear the cart
+  clear = () => {
+    this.setState({
+      items: [],
+      nextId: 0,
+      editActive: false,
+      editId: null
+    });
   }
 
   // Submit the contents of the cart to the server
@@ -139,6 +131,18 @@ class Cart extends Component {
       // TODO: Handle errors better
       alert(`Submission error: ${err.message}`);
     }
+  }
+
+  //
+  // REACT
+  //
+
+  async componentDidMount() {
+    const { getIdToken } = this.props.auth;
+    const response = await fetch('/api/categories', { headers: {'Authorization': `Bearer ${getIdToken()}`} });
+    const categories = await response.json();
+    this.setState({ categories });
+    console.log(categories);
   }
 
   render() {
