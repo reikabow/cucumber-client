@@ -3,6 +3,7 @@ import Item from '../components/Item';
 import Button from 'material-ui/Button';
 import styled from 'styled-components';
 import findIndex from 'lodash/findIndex';
+import { buildTree } from '../lib/tree';
 
 class Cart extends Component {
   state = {
@@ -10,7 +11,8 @@ class Cart extends Component {
     nextId: 0,
     editActive: false,
     editId: null,
-    categories: []
+    categories: [],
+    categoryTree: null
   }
 
   //
@@ -142,7 +144,7 @@ class Cart extends Component {
     const response = await fetch('/api/categories', { headers: {'Authorization': `Bearer ${getIdToken()}`} });
     const categories = await response.json();
     this.setState({ categories });
-    console.log(categories);
+    this.setState({ categoryTree: buildTree(categories) })
   }
 
   render() {
