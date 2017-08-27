@@ -12,6 +12,7 @@ class Cart extends Component {
     editActive: false,
     editId: null,
     categories: [],
+    newCategories: [],
     categoryTree: null
   }
 
@@ -19,23 +20,30 @@ class Cart extends Component {
   // UTILITIES
   //
 
-  // Return category objects from category string
+  // Return category path from category string
   // Potential gotchas
   // - not-unique category names
   // - stale categories (multiple clients)
-  getCategory(categoryString) {
+  getCategoryPath(categoryString) {
     try {
       if (categoryString === '') {
         categoryString = 'ROOT';
       }
+      let path = [];
       const categories = categoryString.split('/');
-      const search = categories[categories.length - 1];
-      const category = this.state.categories.find(c => c.name === search);
-      if (!category) {
-        throw new Error('Unknown category');
+      let curr = this.state.categoryTree;
+      for (let i = 0; i < categories.length; ++i) {
+        let match = curr.find(e => e.name === categories[i]);
+        if (!match) {
+          break;
+        }
+        path.push(match);
+        curr = match;
       }
-      return category;
-      // TODO: adding new categories
+      for (let c of path) {
+        console.log(c);
+      }
+      return path;
     } catch (err) {
       alert(`Error: ${err.message}`);
     }
@@ -91,6 +99,7 @@ class Cart extends Component {
 
   // Close the edit window on a cart item, saving the changes
   saveItem = (id, item) => {
+    let path = this.getCategory(item.category);
     item.category_id = this.getCategory(item.category).id;
 
     const {items} = this.state;
