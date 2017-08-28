@@ -4,6 +4,7 @@ import Button from 'material-ui/Button';
 import styled from 'styled-components';
 import findIndex from 'lodash/findIndex';
 import { buildTree } from '../lib/tree';
+import { addTransactions } from '../lib/api';
 
 class Cart extends Component {
   state = {
@@ -126,17 +127,7 @@ class Cart extends Component {
   handleSubmit = async () => {
     const { getIdToken } = this.props.auth;
     try {
-      const res = await fetch('/api/transactions', {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getIdToken()}`
-        },
-        method: 'POST',
-        body: JSON.stringify(this.state.items)
-      });
-      if (res.status < 600 && res.status >= 500)
-        throw new Error('Bad status');
+      addTransactions(this.state.items);
       this.clear();
     } catch (err) {
       // TODO: Handle errors better
