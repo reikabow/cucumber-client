@@ -3,7 +3,7 @@ import auth0 from 'auth0-js';
 import history from '../history'
 import authVariables from './authVariables'
 
-export default class Auth {
+class Auth {
   auth0 = new auth0.WebAuth(authVariables);
   userProfile;
 
@@ -78,3 +78,7 @@ export default class Auth {
     history.replace('/');
   };
 }
+
+const auth = new Auth();
+
+export default auth;

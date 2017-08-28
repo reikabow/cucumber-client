@@ -8,10 +8,8 @@ import Profile from './pages/Profile';
 
 import AppBar from './components/AppBar';
 
-import Auth from './auth/Auth';
+import auth from './auth/Auth';
 import history from './history';
-
-const auth = new Auth();
 
 const handleAuthentication = (nextState, replace) => {
   if (/access_token|id_token|error/.test(nextState.location.hash)) {
