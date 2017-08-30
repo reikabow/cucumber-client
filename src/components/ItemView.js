@@ -1,6 +1,5 @@
 import React from 'react';
 import Paper from 'material-ui/Paper';
-import styled from 'styled-components';
 import Button from 'material-ui/Button';
 
 const Item = props => {
@@ -14,8 +13,4 @@ const Item = props => {
   );
 }
 
-export default styled(Item)`
-  padding: .5em;
-  width: 90vw;
-  margin: 1em auto;
-`;
+export default Item;

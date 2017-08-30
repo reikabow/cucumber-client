@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Item from '../components/Item';
 import Button from 'material-ui/Button';
-import styled from 'styled-components';
 import findIndex from 'lodash/findIndex';
 import { buildTree } from '../lib/tree';
 import { getRoot, addTransactions } from '../lib/api';
@@ -127,7 +126,6 @@ class Cart extends Component {
   // Submit the contents of the cart to the server
   handleSubmit = async () => {
     const { getIdToken } = this.props.auth;
-    console.log(this.state.items);
     try {
       addTransactions(this.state.items);
       this.clear();
@@ -179,6 +177,4 @@ class Cart extends Component {
   }
 }
 
-export default styled(Cart)`
-  text-align: center;
-`;
+export default Cart;

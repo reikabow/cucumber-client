@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button'
-import styled from 'styled-components';
 
 class EditItem extends Component {
   static defaultProps = {
@@ -106,19 +105,4 @@ class EditItem extends Component {
   }
 }
 
-export default styled(EditItem)`
-  width: 90vw;
-  margin: 1em auto;
-  padding: 0.5em;
-  #fields {
-    width: 90%;
-    margin: 1em auto;
-    text-align: center;
-  }
-  .tf {
-    margin: 0.5em 1em;
-  }
-  #button {
-    margin: 0.5em 1em;
-  }
-`;
+export default EditItem;
