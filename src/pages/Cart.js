@@ -125,7 +125,6 @@ class Cart extends Component {
 
   // Submit the contents of the cart to the server
   handleSubmit = async () => {
-    const { getIdToken } = this.props.auth;
     try {
       addTransactions(this.state.items);
       this.clear();

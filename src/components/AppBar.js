@@ -38,7 +38,7 @@ class AppBar extends Component {
   render() {
     const props = this.props;
     const { profile } = this.state;
-    const { isAuthenticated, getProfile } = props.auth;
+    const { isAuthenticated } = props.auth;
 
     return (
       <MaterialAppBar position="static">
