@@ -4,10 +4,10 @@ import styled from 'styled-components';
 import Button from 'material-ui/Button';
 
 const Item = props => {
-  const {category, price, quantity, units, notes, id, deleteItem, editItem} = props;
+  const { category_id, price, quantity, units, notes, id, deleteItem, editItem } = props;
   return (
     <Paper className={ props.className }>
-      { category } { price } { quantity } { units } { notes }
+      { category_id } ${ price } { quantity } { units } { notes }
       <Button onClick={ () => { deleteItem(id) } }>Delete</Button>
       <Button onClick={ () => { editItem(id) } }>Edit</Button>
     </Paper>
