@@ -4,7 +4,7 @@ import Button from 'material-ui/Button';
 import styled from 'styled-components';
 import findIndex from 'lodash/findIndex';
 import { buildTree } from '../lib/tree';
-import { addTransactions } from '../lib/api';
+import { getRoot, addTransactions } from '../lib/api';
 
 class Cart extends Component {
   state = {
@@ -99,13 +99,14 @@ class Cart extends Component {
   }
 
   // Close the edit window on a cart item, saving the changes
-  saveItem = (id, item) => {
-    let path = this.getCategory(item.category);
-    item.category_id = this.getCategory(item.category).id;
-
-    const {items} = this.state;
+  saveItem = async (id, item) => {
+    // TODO: Add category to transaction derived from categoryString
+    const category = await getRoot();
+    const category_id = category.id;
+    const { items } = this.state;
     const index = this.getIndex(id);
-    const newItems = [...items.slice(0, index), Object.assign({ id }, item), ...items.slice(index + 1)];
+
+    const newItems = [...items.slice(0, index), Object.assign(item, { category_id, id }), ...items.slice(index + 1)];
     this.setState({
       items: newItems,
       editId: null,
@@ -126,6 +127,7 @@ class Cart extends Component {
   // Submit the contents of the cart to the server
   handleSubmit = async () => {
     const { getIdToken } = this.props.auth;
+    console.log(this.state.items);
     try {
       addTransactions(this.state.items);
       this.clear();
