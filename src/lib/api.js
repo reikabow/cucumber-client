@@ -23,6 +23,16 @@ const basicHeader = () => ({
   }
 });
 
+export const newTransaction = (id: number): Transaction => ({
+  id,
+  category_id: null,
+  categoryString: '',
+  price: '',
+  quantity: '',
+  units: 'units',
+  notes: ''
+});
+
 export const getChildren = async (c: Category): Promise<Array<Category>> => {
   const response = await fetch(`/api/children/${c.id}`, basicHeader());
   if (response.status < 600 && response.status >= 500) {

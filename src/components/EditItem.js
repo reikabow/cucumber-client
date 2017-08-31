@@ -1,30 +1,33 @@
+// @flow
+
 import React, { Component } from 'react';
-import TextField from 'material-ui/TextField';
-import Paper from 'material-ui/Paper';
+
 import Button from 'material-ui/Button'
+import Paper from 'material-ui/Paper';
+import TextField from 'material-ui/TextField';
 
-class EditItem extends Component {
-  static defaultProps = {
-    category: '',
-    price: '',
-    notes: '',
-    quantity: '1.0',
-    units: 'units',
-  }
+import type { Transaction } from '../lib/api';
 
+type Props = {
+  transaction: Transaction,
+  saveItem: (id: number, transaction: Transaction) => Promise<>, // To satisfy linter
+  deleteItem: (id: number) => void
+};
+
+type State = {
+  transaction: Transaction,
+  errors: Array<string>
+};
+
+class EditItem extends Component<Props, State> {
   state = {
-    id: this.props.id,
-    category: this.props.category,
-    price: this.props.price,
-    notes: this.props.notes,
-    quantity: this.props.quantity,
-    units: this.props.units,
+    transaction: this.props.transaction,
     errors: []
   }
 
-  isValid = () => {
-    const { price, quantity } = this.state;
-    const errors = [];
+  isValid = (): boolean => {
+    const { price, quantity } = this.state.transaction;
+    const errors: Array<string> = [];
     if (!price || isNaN(price))
       errors.push('Price should be a number');
     if (!quantity || isNaN(quantity))
@@ -37,30 +40,50 @@ class EditItem extends Component {
     }
   }
 
-  attemptSave = id => {
+  attemptSave = (id: number) => {
     if (this.isValid())
-      this.props.saveItem(id, this.state);
+      this.props.saveItem(id, this.state.transaction);
   }
 
-  onCategoryChange = e => this.setState({category: e.target.value});
-  onPriceChange = e => this.setState({price: e.target.value});
-  onNotesChange = e => this.setState({notes: e.target.value});
-  onQuantityChange = e => this.setState({quantity: e.target.value});
-  onUnitsChange = e => this.setState({units: e.target.value});
+  onCategoryStringChange = (e: SyntheticInputEvent<>) => {
+    const { transaction } = this.state;
+    const { target: { value } } = e;
+    this.setState({ transaction: Object.assign(transaction, { categoryString: value }) });
+  }
+  onPriceChange = (e: SyntheticInputEvent<>) => {
+    const { transaction } = this.state;
+    const { target: { value } } = e;
+    this.setState({ transaction: Object.assign(transaction, { price: value }) });
+  }
+  onNotesChange = (e: SyntheticInputEvent<>) => {
+    const { transaction } = this.state;
+    const { target: { value } } = e;
+    this.setState({ transaction: Object.assign(transaction, { notes: value }) });
+  }
+  onQuantityChange = (e: SyntheticInputEvent<>) => {
+    const { transaction } = this.state;
+    const { target: { value } } = e;
+    this.setState({ transaction: Object.assign(transaction, { quantity: value }) });
+  }
+  onUnitsChange = (e: SyntheticInputEvent<>) => {
+    const { transaction } = this.state;
+    const { target: { value } } = e;
+    this.setState({ transaction: Object.assign(transaction, { units: value }) });
+  }
 
   render() {
-    const {category, price, notes, quantity, units} = this.state;
+    const { categoryString, price, notes, quantity, units } = this.state.transaction;
     return (
-      <Paper className={ this.props.className }>
+      <Paper>
         <div id="errors">
           { this.state.errors.join(', ') }
         </div>
         <div id="fields">
           <TextField
             className="tf"
-            onChange={ this.onCategoryChange }
+            onChange={ this.onCategoryStringChange }
             label="Category"
-            value={ category }
+            value={ categoryString }
           />
           <TextField
             onChange={ this.onPriceChange }
@@ -89,13 +112,13 @@ class EditItem extends Component {
           <br/>
           <Button
             className="button"
-            onClick={ () => this.attemptSave(this.props.id, this.state) }
+            onClick={ () => this.attemptSave(this.props.transaction.id) }
           >
             Save
           </Button>
           <Button
             className="button"
-            onClick={ () => this.props.deleteItem(this.props.id) }
+            onClick={ () => this.props.deleteItem(this.props.transaction.id) }
           >
             Delete
           </Button>
