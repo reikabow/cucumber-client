@@ -127,12 +127,17 @@ class Cart extends Component<Props, State> {
   // REACT
   //
 
-  async componentDidMount() {
+  // https://github.com/facebook/flow/issues/1803
+  async _componentDidMount() {
     const { getIdToken } = this.props.auth;
     const response: Response = await fetch('/api/categories', { headers: {'Authorization': `Bearer ${getIdToken()}`} });
     const categories: Array<Category> = await response.json();
     this.setState({ categories });
     this.setState({ categoryTree: buildTree(categories) })
+  }
+
+  componentDidMount() {
+    this._componentDidMount();
   }
 
   render() {
