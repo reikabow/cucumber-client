@@ -8,12 +8,13 @@ export type Category = {
 };
 
 export type Transaction = {
-  category: Category,
+  id: number, // used to order transactions in a cart
+  category: ?Category, // the name and id of the current matched category
+  categoryString: string, // the representation of the category path as a string
   price: string,
   quantity: string,
   units: string,
-  notes: string,
-  id: number
+  notes: string
 };
 
 const basicHeader = () => ({
