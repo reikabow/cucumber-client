@@ -9,7 +9,7 @@ export type Category = {
 
 export type Transaction = {
   id: number, // used to order transactions in a cart
-  category: ?Category, // the name and id of the current matched category
+  category_id: ?number, // id of the current matched category
   categoryString: string, // the representation of the category path as a string
   price: string,
   quantity: string,
