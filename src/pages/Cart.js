@@ -139,7 +139,7 @@ class Cart extends Component<Props, State> {
     const { items, editActive } = this.state;
     return (
       <div id="Cart">
-        { items.length &&
+        { items.length > 0 &&
           items.map(item =>
             <Item
               key={ item.id }
