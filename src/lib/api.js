@@ -28,7 +28,7 @@ export const newTransaction = (id: number): Transaction => ({
   category_id: null,
   categoryString: '',
   price: '',
-  quantity: '',
+  quantity: '1',
   units: 'units',
   notes: ''
 });
