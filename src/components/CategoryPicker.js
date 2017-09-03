@@ -42,9 +42,11 @@ class CategoryPicker extends Component<Props, State> {
   onKeyDown = (e: SyntheticKeyboardEvent<>) => {
     console.log(e.key);
     if (e.key === 'Enter') {
-      console.log('hi')
       const { search, children } = this.state;
       if (children.findIndex(c => c.name.toLowerCase() === search.toLowerCase()) > -1) {
+        return;
+      }
+      if (search.length === 0) {
         return;
       }
       this.setState({ newPath: [...this.state.newPath, { name: search, id: this.state.nextNewId }], search: '', nextNewId: this.state.nextNewId + 1  });
