@@ -84,7 +84,7 @@ class CategoryPicker extends Component<Props, State> {
     this.setState({
       search: '',
       newPath: [],
-      filtered: [],
+      filtered: children,
       path: [],
       children
     });
@@ -93,7 +93,7 @@ class CategoryPicker extends Component<Props, State> {
   async _componentDidMount() {
     const root = await getRoot();
     const children = await getChildren(root);
-    this.setState({ children });
+    this.setState({ children, filtered: children });
   }
 
   componentDidMount() {
@@ -115,6 +115,7 @@ class CategoryPicker extends Component<Props, State> {
           <Input
             style={{ width: '10em' }}
             value={ this.state.search }
+            ref={ input => this.Input = input }
             onChange={ this.onChange }
             onKeyDown={ this.onKeyDown }
           />
