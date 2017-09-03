@@ -63,6 +63,9 @@ class CategoryPicker extends Component<Props, State> {
   }
 
   handleDone = async () => {
+    if (this.state.newPath.length === 0) {
+      return;
+    }
     if (this.state.path.length === 0 && this.state.newPath.length === 0) {
       return;
     }
@@ -75,11 +78,15 @@ class CategoryPicker extends Component<Props, State> {
       addCategories(parent, this.state.newPath);
     }
 
+    const root = await getRoot();
+    const children = await getChildren(root);
+
     this.setState({
       search: '',
       newPath: [],
       filtered: [],
-      path: []
+      path: [],
+      children
     });
   }
 
