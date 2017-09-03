@@ -2,11 +2,12 @@
 
 import React, { Component } from 'react';
 
-import { getRoot, getChildren } from '../lib/api';
+import { getRoot, getChildren, addCategories } from '../lib/api';
 
 import Input from 'material-ui/Input';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
+
 import type { Category } from '../lib/api';
 
 type Props = {};
@@ -60,8 +61,19 @@ class CategoryPicker extends Component<Props, State> {
     this.setState({ search: '', path: [...this.state.path, category ]}, this.setFiltered);
   }
 
-  handleDone = () => {
+  handleDone = async () => {
+    if (this.state.path.length === 0 && this.state.newPath.length === 0) {
+      return;
+    }
     console.log(this.state);
+    if (this.state.path.length === 0) {
+      const root = await getRoot();
+      addCategories(root, this.state.newPath);
+    } else {
+      const parent = this.state.path[this.state.path.length - 1];
+      addCategories(parent, this.state.newPath);
+    }
+
     this.setState({
       search: '',
       newPath: [],
