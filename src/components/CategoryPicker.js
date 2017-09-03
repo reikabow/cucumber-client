@@ -49,7 +49,7 @@ class CategoryPicker extends Component<Props, State> {
   }
 
   onSelect = (category: Category) => {
-    this.setState({ path: [...this.state.path, category ]});
+    this.setState({ search: '', path: [...this.state.path, category ]});
   }
 
   async _componentDidMount() {
@@ -77,7 +77,7 @@ class CategoryPicker extends Component<Props, State> {
         <Paper>
         {
           this.state.filtered.length > 0 &&
-          this.state.filtered.map(c => <div key={ c.id }><Button onClick={ () => this.onSelect(c) }>{ c.name },</Button><br/></div>)
+          this.state.filtered.map(c => <div key={ c.id }><Button onClick={ () => this.onSelect(c) }>{ c.name }</Button><br/></div>)
         }
         </Paper>
       </div>
