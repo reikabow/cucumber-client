@@ -57,8 +57,9 @@ class CategoryPicker extends Component<Props, State> {
     this.setState({ search: e.target.value }, this.setFiltered);
   }
 
-  onSelect = (category: Category) => {
-    this.setState({ search: '', path: [...this.state.path, category ]}, this.setFiltered);
+  onSelect = async (category: Category) => {
+    const children = await getChildren(category)
+    this.setState({ search: '', path: [...this.state.path, category ], children}, this.setFiltered);
   }
 
   handleDone = async () => {
@@ -85,7 +86,7 @@ class CategoryPicker extends Component<Props, State> {
   async _componentDidMount() {
     const root = await getRoot();
     const children = await getChildren(root);
-    // this.setState({ children });
+    this.setState({ children });
   }
 
   componentDidMount() {
