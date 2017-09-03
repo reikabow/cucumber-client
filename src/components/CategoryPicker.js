@@ -115,7 +115,7 @@ class CategoryPicker extends Component<Props, State> {
           <Input
             style={{ width: '10em' }}
             value={ this.state.search }
-            ref={ input => this.Input = input }
+            inputRef={ input => this.input = input }
             onChange={ this.onChange }
             onKeyDown={ this.onKeyDown }
           />
