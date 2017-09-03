@@ -14,6 +14,8 @@ type State = {
   path: Array<Category>,
   children: Array<Category>,
   filtered: Array<Category>,
+  newPath: Array<Category>,
+  nextNewId: number,
   search: string
 };
 
@@ -21,7 +23,9 @@ class CategoryPicker extends Component<Props, State> {
   state = {
     path: [],
     children: [{name: 'hi', id: 1}, {name: 'hitmonchan', id: 5}, {name: 'cool', id: 2}, {name: 'whatever', id: 3}],
+    newPath: [],
     filtered: [],
+    nextNewId: 0,
     search: ''
   }
 
@@ -36,11 +40,14 @@ class CategoryPicker extends Component<Props, State> {
   }
 
   onKeyDown = (e: SyntheticKeyboardEvent<>) => {
-    if (e.key == 'Enter') {
+    console.log(e.key);
+    if (e.key === 'Enter') {
+      console.log('hi')
       const { search, children } = this.state;
-      if (children.findIndex(({ name }) => name === search))
+      if (children.findIndex(c => c.name.toLowerCase() === search.toLowerCase()) > -1) {
         return;
-      this.setState({ children: [...children, { name: search, id: -1 }] })
+      }
+      this.setState({ newPath: [...this.state.newPath, { name: search, id: this.state.nextNewId }], search: '', nextNewId: this.state.nextNewId + 1  });
     }
   }
 
@@ -49,7 +56,7 @@ class CategoryPicker extends Component<Props, State> {
   }
 
   onSelect = (category: Category) => {
-    this.setState({ search: '', path: [...this.state.path, category ]});
+    this.setState({ search: '', path: [...this.state.path, category ]}, this.setFiltered);
   }
 
   async _componentDidMount() {
@@ -69,17 +76,25 @@ class CategoryPicker extends Component<Props, State> {
           this.state.path.length > 0 &&
           this.state.path.map(e => <span key={ e.id }>{ e.name } -></span>)
         }
-        <Input
-          value={ this.state.search }
-          onChange={ this.onChange }
-          onKeyDown={ this.onKeyDown }
-        />
-        <Paper>
         {
-          this.state.filtered.length > 0 &&
-          this.state.filtered.map(c => <div key={ c.id }><Button onClick={ () => this.onSelect(c) }>{ c.name }</Button><br/></div>)
+          this.state.newPath.length > 0 &&
+          this.state.newPath.map(e => <span key={ e.id }>{ e.name } -></span>)
         }
-        </Paper>
+        <div>
+          <Input
+            style={{ width: '10em' }}
+            value={ this.state.search }
+            onChange={ this.onChange }
+            onKeyDown={ this.onKeyDown }
+          />
+          <Paper style={{ width: '10em' }}>
+          {
+            this.state.filtered.length > 0 &&
+            this.state.filtered.map(c => <div key={ c.id }><Button style={{ width: '100%' }} onClick={ () => this.onSelect(c) }>{ c.name }</Button><br/></div>)
+          }
+          </Paper>
+        </div>
+        <Button>Done</Button>
       </div>
     );
   }
