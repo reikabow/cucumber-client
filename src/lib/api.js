@@ -52,9 +52,27 @@ export const getRoot = async (): Promise<Category> => {
 };
 
 export const addCategory = async (parent: Category, categoryName: string) => {
-  const response = await fetch(`/api/categories/${parent.id}/${categoryName}`, basicHeader());
+  const response = await fetch(`/api/categories/${parent.id}/${categoryName}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${auth.getIdToken()}`
+    }
+  });
   if (response.status < 600 && response.status >= 500) {
     throw new Error(`addCategory(${parent.name}, ${categoryName}) failed`);
+  }
+};
+
+export const addCategories = async (parent: Category, newCategoryPath: Array<Category>) => {
+  if (newCategoryPath.length === 0) return;
+  else {
+    // TODO: Use returning syntax
+    let [x, ...xs] = newCategoryPath;
+    await addCategory(parent, x.name);
+    const children: Array<Category> = await getChildren(parent);
+    let next: Category = children.find(c => c.name === x.name);
+    console.log(next);
+    await addCategories(next, xs);
   }
 };
 
