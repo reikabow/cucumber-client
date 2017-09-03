@@ -40,7 +40,6 @@ class CategoryPicker extends Component<Props, State> {
   }
 
   onKeyDown = (e: SyntheticKeyboardEvent<>) => {
-    console.log(e.key);
     if (e.key === 'Enter') {
       const { search, children } = this.state;
       if (children.findIndex(c => c.name.toLowerCase() === search.toLowerCase()) > -1) {
@@ -59,6 +58,16 @@ class CategoryPicker extends Component<Props, State> {
 
   onSelect = (category: Category) => {
     this.setState({ search: '', path: [...this.state.path, category ]}, this.setFiltered);
+  }
+
+  handleDone = () => {
+    console.log(this.state);
+    this.setState({
+      search: '',
+      newPath: [],
+      filtered: [],
+      path: []
+    });
   }
 
   async _componentDidMount() {
@@ -96,7 +105,7 @@ class CategoryPicker extends Component<Props, State> {
           }
           </Paper>
         </div>
-        <Button>Done</Button>
+        <Button onClick={ this.handleDone }>Done</Button>
       </div>
     );
   }
