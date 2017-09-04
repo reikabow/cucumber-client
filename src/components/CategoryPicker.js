@@ -1,5 +1,5 @@
 // @flow
-// Focus/Blur article https://medium.com/@jessebeach/dealing-with-focus-and-blur-in-a-composite-widget-in-react-90d3c3b49a9b
+// Focus/Blur article https://medium.com/@jessebeach/dealing-with-focus-and-blur-in-a-composite-widget-in-react-90d3c3b49a9b//
 
 import React, { Component } from 'react';
 
@@ -46,8 +46,22 @@ class CategoryPicker extends Component<Props, State> {
   }
 
   onKeyDown = (e: SyntheticKeyboardEvent<>) => {
+    const { search, children } = this.state;
+    if (e.key === 'Backspace') {
+      if (search.length === 0) {
+
+        if (this.state.newPath.length > 0) {
+          this.setState({
+            newPath: this.state.newPath.slice(0, -1)
+          });
+        } else if (this.state.path.length > 0) {
+          this.setState({
+            path: this.state.path.slice(0, -1)
+          })
+        }
+      }
+    }
     if (e.key === 'Enter') {
-      const { search, children } = this.state;
       if (children.findIndex(c => c.name.toLowerCase() === search.toLowerCase()) > -1) {
         return;
       }
