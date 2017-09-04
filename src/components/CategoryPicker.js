@@ -1,4 +1,5 @@
 // @flow
+// Focus/Blur article https://medium.com/@jessebeach/dealing-with-focus-and-blur-in-a-composite-widget-in-react-90d3c3b49a9b
 
 import React, { Component } from 'react';
 
@@ -17,16 +18,20 @@ type State = {
   filtered: Array<Category>,
   newPath: Array<Category>,
   nextNewId: number,
+  focused: boolean,
   search: string
 };
 
 class CategoryPicker extends Component<Props, State> {
+  _timeoutID: ?number;
+
   state = {
     path: [],
     children: [{name: 'hi', id: 1}, {name: 'hitmonchan', id: 5}, {name: 'cool', id: 2}, {name: 'whatever', id: 3}],
     newPath: [],
     filtered: [],
     nextNewId: 0,
+    focused: false,
     search: ''
   }
 
@@ -60,6 +65,7 @@ class CategoryPicker extends Component<Props, State> {
   onSelect = async (category: Category) => {
     const children = await getChildren(category)
     this.setState({ search: '', path: [...this.state.path, category ], children}, this.setFiltered);
+    this.input.focus();
   }
 
   handleDone = async () => {
@@ -90,6 +96,21 @@ class CategoryPicker extends Component<Props, State> {
     });
   }
 
+  onBlur = () => {
+    this._timeoutID = setTimeout(() => {
+      if (this.state.focused) {
+        this.setState({ focused: false });
+      }
+    }, 0)
+  };
+
+  onFocus = () => {
+    clearTimeout(this._timeoutID);
+    if (!this.state.focused) {
+      this.setState({ focused: true });
+    }
+  }
+
   async _componentDidMount() {
     const root = await getRoot();
     const children = await getChildren(root);
@@ -111,7 +132,10 @@ class CategoryPicker extends Component<Props, State> {
           this.state.newPath.length > 0 &&
           this.state.newPath.map(e => <span key={ e.id }>{ e.name } -></span>)
         }
-        <div>
+        <div
+          onFocus={ this.onFocus }
+          onBlur={ this.onBlur }
+        >
           <Input
             style={{ width: '10em' }}
             value={ this.state.search }
@@ -121,6 +145,7 @@ class CategoryPicker extends Component<Props, State> {
           />
           <Paper style={{ width: '10em' }}>
           {
+            this.state.focused &&
             this.state.filtered.length > 0 &&
             this.state.filtered.map(c => <div key={ c.id }><Button style={{ width: '100%' }} onClick={ () => this.onSelect(c) }>{ c.name }</Button><br/></div>)
           }
