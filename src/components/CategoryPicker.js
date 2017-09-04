@@ -35,6 +35,33 @@ class CategoryPicker extends Component<Props, State> {
     search: ''
   }
 
+  _componentDidUpdate = async (prevProps: Props, prevState: State) => {
+    const { newPath, path } = this.state;
+    // path has been emptied
+    if (prevState.path.length !== 0 && path.length === 0) {
+      const root = await getRoot();
+      const children = await getChildren(root);
+      this.setState({ children, filtered: children });
+      return;
+    }
+    // A category has been taken off of path
+    if (prevState.path.length - 1 === path.length) {
+      const children = await getChildren(path[path.length - 1]);
+      this.setState({ children, filtered: children });
+      return;
+    }
+    // newPath has been emptied
+    if (prevState.newPath.length !== 0 && newPath.length === 0) {
+      const children = await getChildren(path[path.length - 1]);
+      this.setState({ children, filtered: children });
+      return;
+    }
+  };
+
+  async componentDidUpdate(prevProps: Props, prevState: State) {
+    this._componentDidUpdate(prevProps, prevState);
+  }
+
   setFiltered = (): void => {
     const { search, children } = this.state;
     const filtered = children.filter(c => {
